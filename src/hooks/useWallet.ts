@@ -35,27 +35,24 @@ export default function useWallet() {
     }
   };
 
+  const disconnectWallet = () => {
+    setProvider(null);
+    setSigner(null);
+    setAccount(null);
+  };
+
   useEffect(() => {
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", (accounts: string[]) => {
         setAccount(accounts[0] || null);
       });
+
+      window.ethereum.on("chainChanged", () => {
+        window.location.reload();
+      });
     }
   }, []);
 
-  useEffect(() => {
-  if (window.ethereum) {
-    window.ethereum.on("accountsChanged", (accounts: string[]) => {
-      setAccount(accounts[0] || null);
-    });
+  return { provider, signer, account, connectWallet, disconnectWallet };
 
-    window.ethereum.on("chainChanged", () => {
-
-      window.location.reload();
-    });
-  }
-}, []);
-
-
-  return { provider, signer, account, connectWallet };
 }
